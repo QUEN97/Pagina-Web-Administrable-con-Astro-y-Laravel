@@ -1,0 +1,15 @@
+---
+import { Image } from "astro:assets";
+import laundryImage from "~/assets/laundry_machines.jpg";
+
+const widths = [450, 800, 1200];
+const sizes = "100vw";
+---
+
+<Image
+  class="h-full w-full object-cover"
+  src={laundryImage}
+  widths={widths}
+  sizes={sizes}
+  alt="Image"
+/>

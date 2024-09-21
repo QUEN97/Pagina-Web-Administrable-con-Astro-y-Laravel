@@ -1,0 +1,105 @@
+<div id="bubblefield" class="absolute inset-0">
+  <canvas id="bubblefield-canvas"></canvas><!--Esto seria el lienzo donde se pintan las burubujas -->
+</div>
+
+<script>
+  import invariant from "tiny-invariant";
+
+  const COUNT = 500; // Número de burbujas a generar
+  const SPEED = 1; // velocidad a la que se mueven las burbujas
+
+  class Bubble {
+    x: number;// posicionamos horizontalmente la burbuja
+    y: number;// posicionamos verticalmente la burbuja
+    radius: number; //radio dela burubuja
+    alpha: number;// opacidad burbuja
+
+    constructor(x = 0, y = 0, radius = 0, alpha = 1) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+      this.alpha = alpha;
+    }
+
+    update(width: number, height: number, speed: number) {
+      //movemos hacia arriba la burbuja
+      this.y -= speed;
+
+      // Establece una nueva posición aleatoria en el eje X y reinicia la burbuja desde la parte inferior
+      if (this.y < -this.radius) {
+        this.x = Math.random() * width - width / 2;
+        this.y = height + this.radius; // Reinicia desde la parte inferior
+        this.radius = Math.random() * 35 + 15; //tamaño burbujas aleatorio
+        this.alpha = Math.random() * 0.3 + 0.5; // opacidad de forma aleatoria
+      }
+    }
+
+    draw(ctx: CanvasRenderingContext2D) {
+      //el color y degradado de la burbuja
+      const gradient = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.radius
+      );
+      gradient.addColorStop(0, `rgba(173, 216, 230, ${this.alpha})`);//color centro
+      gradient.addColorStop(1, 'rgba(173, 216, 230)');//color borde
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);//dibuja el circulo
+      ctx.fillStyle = gradient; // Establece el color de relleno con el degradado
+      ctx.fill();//pintamos la burbuja
+    }
+  }
+
+  //crea el array d eburbujas
+  const bubbles = Array.from({ length: COUNT }, () => new Bubble(0, 0, 0));
+  let rafId = 0;// el idi de la solicitud de animacion
+
+  const canvas = document.querySelector(
+    "#bubblefield-canvas",
+  ) as HTMLCanvasElement;
+  invariant(canvas, "canvas should not be null");
+  const ctx = canvas.getContext("2d");// canvas
+
+  const container = document.querySelector("#bubblefield") as HTMLElement;
+  invariant(container, "container should not be null");
+  const resizeObserver = new ResizeObserver(setup);//revisa el cambio de tamaño de burbujas
+  resizeObserver.observe(container);//establece los tamaños
+
+  function setup() {
+    invariant(ctx, "canvas context should not be null");
+    rafId > 0 && cancelAnimationFrame(rafId);// Cancela la animación anterior si existe
+
+    const { clientWidth: width, clientHeight: height } = container; // Obtiene el tamaño del contenedor
+    const dpr = window.devicePixelRatio || 1; // Obtiene el ratio de píxeles del dispositivo
+    canvas.width = width * dpr; // Establece el ancho del canvas
+    canvas.height = height * dpr; // Establece el alto del canvas
+    canvas.style.width = `${width}px`; // Ajusta el estilo del ancho del canvas
+    canvas.style.height = `${height}px`; // Ajusta el estilo del alto del canvas
+    ctx.scale(dpr, dpr); // Escala el contexto del canvas para adaptarse a la densidad de píxeles
+
+    // Inicializar burbujas
+    for (const bubble of bubbles) {
+      bubble.x = Math.random() * width - width / 2; // Posición horizontal aleatoria
+      bubble.y = Math.random() * height + height; // Posición vertical inicial fuera del canvas
+      bubble.radius = Math.random() * 35 + 15; // Tamaño aleatorio de la burbuja
+      bubble.alpha = Math.random() * 0.3 + 0.5; // Opacidad aleatoria
+    }
+
+    ctx.translate(width / 2, height / 2); // Mueve el origen del contexto al centro del canvas
+    rafId = requestAnimationFrame(frame); // Inicia la animación
+  }
+
+  function frame() {
+    invariant(ctx, "canvas context should not be null");
+    const { clientWidth: width, clientHeight: height } = container;//tamaño contenedor
+
+    ctx.clearRect(-width / 2, -height / 2, width, height);//limpia el canvas
+
+    for (const bubble of bubbles) {
+      bubble.update(width, height, SPEED);// Actualiza la posición de la burbuja
+      bubble.draw(ctx);// Dibuja la burbuja en el canvas
+    }
+
+    rafId = requestAnimationFrame(frame);// Solicita la siguiente animación
+  }
+</script>

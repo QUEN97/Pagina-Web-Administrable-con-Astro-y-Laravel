@@ -1,0 +1,72 @@
+---
+import ContentSection from "~/components/content-section.astro";
+import ContactForm from "~/components/contact-form.astro";
+import { Image } from "astro:assets";
+import Image1 from "~/assets/image2.svg";
+const widths = [250, 400];
+const sizes = "(min-width: 220px) 20vw, 37vw";
+---
+
+<ContentSection title="¡Ponte en contacto con nosotros!" id="contacto">
+    <div id="laundry"
+    class="absolute left-[85%] top-0 z-[-1] hidden scale-90 md:top-[10%] md:block xl:left-[4%] xl:top-0"
+  >
+    <Image
+      class="h-auto w-full object-contain opacity-50"
+      src={Image1}
+      widths={widths}
+      sizes={sizes}
+      loading="eager"
+      alt="Image"
+    />
+  </div>
+    <Fragment slot="lead">
+        Puedes contactarnos <span class="text-primary">completanto el formulario</span>{" "}
+      o por nuestros <span class="text-primary">métodos de cóntacto.</span>{" "}
+    </Fragment>
+    <section class="py-3 px-3 sm:px-2  mb-3">
+        <div class="max-w-7xl m-auto">
+            <div class="grid gap-3 grid-cols-1 grid-rows-1 sm:grid-cols-2 smg:grid-rows-1 sm:justify-items-center px-0 py-3 sm:px-3">
+                <!-- <FormContac url={url.href} client:load/> -->
+                <ContactForm/>
+                <div class=" text-balance flex flex-col gap-3 sm:my-3 col-start-1 row-start-1 sm:col-start-2">
+                    <div>
+                        <h2 class="flex gap-2 items-center text-2xl font-medium text-purple-600 mb-1 px-1">
+                            
+                            <span>Correo:</span>
+                        </h2>
+                        <span>luzmarianacerezoromero@gmail.com</span>
+                    </div>
+                    <div>
+                        <h2 class="flex gap-2 items-center text-2xl font-medium text-purple-600 mb-1 px-1">
+                            
+                            <span>Teléfono:</span>
+                        </h2>
+                        <span>(+52) 222 847 9246</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+  </ContentSection>
+  <style>
+    @keyframes float {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+  
+      100% {
+        transform: translate3d(0, 30px, 0);
+      }
+    }
+  
+    #laundry {
+      animation: float linear 2.5s infinite alternate;
+    }
+  
+    @media (prefers-reduced-motion: reduce) {
+      #laundry {
+        @apply animate-none;
+      }
+    }
+  </style>

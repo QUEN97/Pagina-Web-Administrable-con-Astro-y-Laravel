@@ -1,0 +1,80 @@
+---
+import { Image } from "astro:assets";
+import logoImage from "~/assets/logoipsum-323.svg";
+import HeroImage from "~/components/hero-image.astro";
+import Bubblefield from "~/components/bubblefield.astro";
+
+const widths = [450, 800];
+const sizes = "(min-width: 640px) 42vw, 67vw";
+---
+
+<section class="relative h-full bg-gradient-to-r from-cyan-500 to-blue-500">
+  <Bubblefield />
+  <div id="splash-bg-fallback" class="absolute inset-0 hidden opacity-40">
+    <HeroImage />
+  </div>
+  <div class="relative grid h-full place-items-center">
+    <!-- <h2
+      class="flex flex-col items-center gap-2 self-end sm:gap-4 sm:self-auto sm:justify-self-end"
+    >
+      <div
+        class="gradient-text text-center font-extrabold tracking-tighter text-6xl md:text-8xl"
+      >
+        Lavandería
+        <br /> y
+        <br /> Tintorería
+      </div>
+    </h2> -->
+    <div
+      id="laundry"
+      class="w-2/3 max-w-3xl self-center sm:w-10/12 sm:self-auto sm:justify-self-center"
+    >
+      <Image
+        class="h-full w-full object-cover"
+        src={logoImage}
+        widths={widths}
+        sizes={sizes}
+        loading="eager"
+        alt="Image"
+      />
+    </div>
+  </div>
+</section>
+
+<noscript>
+  <style>
+    #splash-bg-fallback {
+      display: block;
+    }
+  </style>
+</noscript>
+
+<style>
+  @keyframes float {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+      transform: translate3d(0, 30px, 0);
+    }
+  }
+
+  #laundry {
+    animation: float linear 2.5s infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #laundry {
+      @apply animate-none;
+    }
+
+    :global(#bubllefield) {
+      @apply hidden;
+    }
+
+    #splash-bg-fallback {
+      @apply block;
+    }
+  }
+</style>

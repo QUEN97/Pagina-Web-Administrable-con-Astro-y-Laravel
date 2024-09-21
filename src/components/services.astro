@@ -1,0 +1,57 @@
+---
+import ServiceItem from "./service-item.astro";
+import ContentSection from "~/components/content-section.astro";
+//import { services } from "~/constants/services";
+
+//Dejamos de usar el js statico para usar la API
+import { fetchServices } from "~/constants/services";
+
+let services = [];
+let isLoading = true;
+let error = null;
+
+try {
+  services = await fetchServices();
+} catch (err) {
+  error = "Error al cargar los servicios.";
+} finally {
+  isLoading = false;
+}
+---
+
+<ContentSection title="Nuestros Servicios" id="servicios">
+  <Fragment slot="lead">
+    Entrega en <span class="text-primary">24 horas</span>. <br />
+    <span class="text-slate-400 text-sm">*Sujeto a cambios.</span>
+  </Fragment>
+  <!-- <ul class="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    {
+      services.map(({ id, title, description, icon }) => (
+        <li class="group flex transform flex-col items-center gap-4 border border-default bg-offset p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+          <ServiceItem
+            id={id}
+            title={title}
+            description={description}
+            icon={icon}
+          />
+        </li>
+      ))
+    }
+  </ul> -->
+  {isLoading && <p>Cargando servicios...</p>}
+
+  {error && <p class="text-red-500">{error}</p>}
+
+  {!isLoading && !error && (
+    <ul class="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {services.map(({ slug, title, description, icon }) => (
+        <li
+          class="group flex transform flex-col items-center gap-4 border border-default bg-offset p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+        >
+          <ServiceItem slug={slug} title={title} description={description} icon={icon} />
+        </li>//aqui agregamos el slug que añadimos en la bd en lugar del id
+      ))}
+    </ul>
+  )}
+
+</ContentSection>

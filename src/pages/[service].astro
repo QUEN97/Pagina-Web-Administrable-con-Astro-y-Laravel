@@ -1,0 +1,79 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import logoImage from "~/assets/logoipsum-323.svg";
+
+const widths = [250, 400];
+const sizes = "(min-width: 440px) 32vw, 37vw";
+
+// Obtener el parámetro dinámico 'service' de la URL desde Astro.params
+const { service } = Astro.params;
+
+let info = null;
+let error = null;
+
+try {
+  // Llamar a la API para obtener los servicios
+  const response = await fetch("http://127.0.0.1:8000/api/services"); // Cambia esto por la URL real de tu API
+  const services = await response.json();
+
+  // volvemos  services es un array
+  if (Array.isArray(services)) {
+    // Buscar el servicio por su slug
+    info = services.find((serviceItem) => serviceItem.slug === service);
+
+    if (!info) {
+      // Si no se encuentra el servicio, redirijo a la página 404
+      Astro.redirect("/404");
+    }
+  } else {
+    error = "La API no devolvió una lista de servicios válida.";
+  }
+} catch (err) {
+  error = "No se pudo cargar la información del servicio.";
+}
+---
+
+<Layout title={info ? `Servicio ${info.title}` : "Servicio no encontrado"}>
+  <main class="m-auto max-w-4xl">
+    <header class="relative">
+      <a href='/' type="button" class="fixed left-2 top-2 text-offset bg-black font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2">
+        <svg class="w-4 h-4 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+        </svg>
+        <span class="sr-only">Icon description</span>
+      </a>
+    
+      <h1
+        class="scale-50 font-black uppercase text-6xl md:text-8xl text-center py-8 px-4"
+        style="view-transition-name: service-title"
+      >
+        Servicios de
+        <span class="block text-[36px] md:text-[58px]">Lavandería</span>
+      </h1>
+      
+    </header>
+    
+    <div class="grid grid-cols-1 md:grid-cols-[350px_1fr] gap-x-12 mt-4 md:mt-20 px-8">
+      {info ? (
+        <>
+          <Image
+            class="h-auto w-full object-contain"
+            src={logoImage}
+            widths={widths}
+            sizes={sizes}
+            loading="eager"
+            alt="Image"
+          />
+
+          <aside class="mt-10 md:mt-0">
+            <h1 class="text-5xl font-black mb-4">{info.title}</h1>
+            <p class="text-lg mb-4">{info.description}</p>
+          </aside>
+        </>
+      ) : (
+        <p class="text-red-500 text-xl">No se encontró la información del servicio.</p>
+      )}
+    </div>
+  </main>
+</Layout>

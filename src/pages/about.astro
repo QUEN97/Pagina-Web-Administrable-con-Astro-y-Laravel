@@ -1,0 +1,86 @@
+---
+import ContentSection from "~/components/content-section.astro";
+import { Icon } from "astro-icon/components";
+import Layout from "../layouts/Layout.astro";
+import type { ServiceItem } from "~/types";
+const misvis: Array<ServiceItem> = [
+    {
+        title: "Misión",
+        description:
+            "Nuestra misión es proporcionar un servicio de lavandería de primera clase que supere las expectativas de nuestros clientes, garantizando que cada prenda sea tratada con el  máximo cuidado y devuelta en perfecto estado. Nos esforzamos por ser un socio de confianza para nuestros clientes, ofreciendo soluciones rápidas y efectivas para sus necesidades de limpieza.",
+        icon: "mdi:medal",
+    },
+    {
+        title: "Visión",
+        description:
+            "Aspiramos a ser la lavandería preferida en nuestra comunidad, reconocida por nuestro compromiso con la excelencia, la innovación y la sostenibilidad. Queremos ser un referente en la industria, no solo por la calidad de nuestros servicios, sino también por nuestro impacto positivo en el medio ambiente y en la vida de nuestros clientes.",
+        icon: "mdi:medal",
+    },
+    {
+        title: "Meta",
+        description:
+            "Nuestra meta es expandir nuestros servicios para llegar a más clientes y mejorar continuamente la calidad de nuestra atención. Nos proponemos alcanzar un alto nivel de satisfacción del cliente, donde cada persona que utilice nuestros servicios sienta que sus expectativas han sido no solo cumplidas, sino superadas.",
+        icon: "mdi:medal",
+    },
+    {
+        title: "Compromiso con el cliente",
+        description:
+            "Estamos comprometidos a ofrecer un servicio excepcional a nuestros clientes en cada interacción. Nos aseguramos de que cada prenda sea tratada con el máximo cuidado y que nuestros clientes reciban un servicio amable, eficiente y confiable. Valoramos la confianza que depositas en nosotros y nos comprometemos a mantener la integridad y la calidad en todo lo que hacemos.",
+        icon: "mdi:medal",
+    },
+];
+---
+
+<Layout title="Lavo Plus">
+    <ContentSection title="Nuestra Historia en Puebla" id="servicios">
+        <a href='/' type="button" class="fixed left-2 top-2 text-offset bg-black font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2">
+            <svg class="w-4 h-4 rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+            <span class="sr-only">Icon description</span>
+          </a>
+        <div class="mx-auto max-w-7xl">
+            <p class="mt-2 leading-6 text-offset text-lg">
+                Nuestra lavandería en Puebla nació de la necesidad de ofrecer un
+                servicio de limpieza y cuidado de prendas que combinara
+                eficiencia, calidad y atención personalizada. Fundada en el
+                corazón de la ciudad, nuestra historia comenzó con una pequeña
+                tienda y una gran visión: brindar a los poblanos un lugar de
+                confianza donde pudieran dejar sus prendas sabiendo que
+                recibirían el mejor trato.
+            </p>
+            <p class="mt-2 leading-6 text-offset text-lg">
+                Con el paso del tiempo, fuimos ganando la preferencia de
+                nuestros clientes gracias a nuestra dedicación y a la inversión
+                en tecnología de vanguardia. Hoy en día, seguimos comprometidos
+                con los mismos valores que nos vieron nacer, orgullosos de ser
+                parte de la comunidad poblana y de contribuir al bienestar de
+                nuestros clientes a través de un servicio de lavandería
+                excepcional.
+            </p>
+        </div>
+        <br />
+        <div class="mx-auto max-w-7xl">
+            <ul
+                class="md:flex-cols-2 lg:flex-cols-2 flex max-w-7xl grid-cols-1 gap-4"
+            >
+                {
+                    misvis.map(({ title, description, icon }) => (
+                        <li class="group flex transform flex-col items-center gap-4 border border-default bg-offset p-6 transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+                            <div class="size-16 rounded-full border-2 border-cyan-400 p-3 transition-transform duration-300 ease-in-out group-hover:rotate-12 group-hover:scale-110">
+                                <Icon name={icon} class="size-full" />
+                            </div>
+                            <p class="gradient-text text-center font-extrabold text-xl">
+                                {title}
+                            </p>
+                            <p class="text-offset text-sm ">
+                                {description}
+                            </p>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+        <br/>
+    </ContentSection>
+</Layout>

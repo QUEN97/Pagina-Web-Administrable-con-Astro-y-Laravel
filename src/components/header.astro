@@ -1,0 +1,169 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import logoImage from "~/assets/logoipsum-323.svg";
+import ThemeSwitcher from "~/components/theme-switcher.astro";
+import type { NavItem } from "~/types";
+
+const widths = [450, 800];
+const sizes = "(min-width: 40px) 42vw, 67vw";
+
+const navItems: Array<NavItem> = [
+  { title: "Nosotros", url: "#nosotros" },
+  { title: "Servicios", url: "#servicios" },
+  { title: "Galeria", url: "#galeria" },
+  { title: "FAQ´S", url: "#faqs" },
+  { title: "Contactános", url: "#contacto" },
+];
+---
+
+<header
+  id="page-header"
+  class="absolute bottom-0 z-20 flex w-full items-center justify-between border-b border-transparent px-8 py-4 text-white"
+>
+  <a class="flex items-center gap-3 hover:!text-default" href="#">
+    <h1 class="sr-only">Lavandería</h1>
+    <Image
+      class="h-full w-full object-cover"
+      src={logoImage}
+      widths={widths}
+      sizes={sizes}
+      loading="eager"
+      alt="Image"
+    />
+  </a>
+  <div>
+    <div class="flex items-center gap-6">
+      <nav class="hidden sm:block">
+        <ul class="flex items-center gap-6" id="nav-list">
+          {
+            navItems.map(({ title, url }) => (
+              <li>
+                <a class="text-sm nav-link" href={url} data-url={url}>
+                  {title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <button
+        id="open-nav-button"
+        type="button"
+        class="btn sm:hidden"
+        aria-label="Navigation"
+      >
+        <Icon name="mdi:menu" class="size-8" />
+      </button>
+      <ThemeSwitcher />
+    </div>
+    <div id="menu-modal" class="modal hidden" aria-hidden="true">
+      <div class="fixed inset-0 bg-default px-8 py-4 text-default">
+        <div class="space-y-4" role="dialog" aria-modal="true">
+          <header class="text-right">
+            <button
+              id="close-nav-button"
+              type="button"
+              class="btn"
+              aria-label="Close navigation"
+            >
+              <Icon name="mdi:close" class="size-8" />
+            </button>
+          </header>
+          <nav>
+            <ul class="flex flex-col">
+              {
+                navItems.map(({ title, url }) => (
+                  <li>
+                    <a class="block py-4 text-center text-xl nav-link" href={url} data-url={url}>
+                      {title}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  import MicroModal from "micromodal";
+  import invariant from "tiny-invariant";
+
+  const menuModalId = "menu-modal";
+
+  const header = document.querySelector("#page-header");
+  const page = document.documentElement;
+  const menu = document.querySelector(`#${menuModalId} ul`);
+  const openNavButton = document.querySelector("#open-nav-button");
+  const closeNavButton = document.querySelector("#close-nav-button");
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  invariant(header, "header should not be null");
+  invariant(menu, "menu should not be null");
+  invariant(openNavButton, "openNavButton should not be null");
+  invariant(closeNavButton, "closeNavButton should not be null");
+
+  const openMenu = () => {
+    MicroModal.show(menuModalId, { disableScroll: true });
+  };
+
+  const closeMenu = () => {
+    MicroModal.close(menuModalId);
+  };
+
+  openNavButton.addEventListener("click", openMenu);
+  closeNavButton.addEventListener("click", closeMenu);
+
+  document.addEventListener("scroll", () => {
+    const d = page.clientHeight - page.scrollTop - header.offsetHeight;
+    header.classList.toggle("fixed-header", d < 0);
+    updateActiveLink();
+  });
+
+  const updateActiveLink = () => {
+    const scrollPosition = window.scrollY;
+    navLinks.forEach(link => {
+      const section = document.querySelector(link.getAttribute('data-url'));
+      if (section) {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        if (scrollPosition >= sectionTop && scrollPosition < (sectionTop + sectionHeight)) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      }
+    });
+  };
+
+  menu.addEventListener("click", (event) => {
+    if ((event.target).tagName === "A") {
+      closeMenu();
+    }
+  });
+</script>
+
+<noscript>
+  <style>
+    #open-nav-button {
+      display: none;
+    }
+  </style>
+</noscript>
+
+<style>
+  .fixed-header {
+    @apply fixed bottom-auto top-0;
+    @apply border-default bg-default text-default;
+  }
+  .modal.is-open {
+    @apply block;
+  }
+  .nav-link.active {
+    @apply text-primary; /* Adjust this style for the active link */
+  }
+</style>

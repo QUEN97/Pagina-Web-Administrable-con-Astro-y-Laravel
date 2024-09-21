@@ -1,0 +1,41 @@
+---
+import {main} from '~/services/sentNodeMailer';
+const clases='mt-1 border border-slate-700 text-black bg-offset rounded-lg w-full p-2';
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    main(data);
+  
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+<form method="POST" class="my-3 sm:my-0 pt-3 sm:pt-0 border-t sm:border-t-0 flex flex-col gap-2 w-full">
+    <label for="Nombre">
+        <span class="text-purple-500">Nombre</span>
+        <input id="Nombre" name="Cliente" type="text" required class={clases}>
+    </label>
+    <label for="Email">
+        <span class="text-purple-500">Correo electrónico</span>
+        <input id="Email" name="Correo"type="email" required placeholder="example@correo.com" class={clases}>
+    </label>
+    <label for="Mensaje">
+        <span class="text-purple-500">Mensaje</span>
+        <textarea name="Mensaje" id="Mensaje" required v-model="user.details"  class={clases}></textarea>
+    </label>
+    <button type="submit" class="w-fit px-4 py-2 rounded-lg bg-pink-700 text-pink-100 hover:bg-pink-600 transition-colors duration-300">
+        <span>Enviar</span>
+    </button>
+</form>
+<style>
+  label > span::before{
+      content: '*';
+      color:rgb(248 113 113);
+  }
+  textarea{
+      resize: none;
+  }
+  </style>

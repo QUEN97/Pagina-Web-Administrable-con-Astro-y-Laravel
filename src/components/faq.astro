@@ -1,0 +1,87 @@
+---
+import ContentSection from "~/components/content-section.astro";
+import { Image } from "astro:assets";
+import Image2 from "~/assets/image2.svg";
+const widths = [550, 400];
+const sizes = "(min-width: 660px) 62vw, 67vw";
+//import { faqs } from '~/constants/faqs';
+//const getfaqs = faqs;
+import { fetchQuestions } from "~/constants/faqs";
+
+let questions = [];
+let isLoading = true;
+let error = null;
+
+try {
+  questions = await fetchQuestions();
+} catch (err) {
+  error = "Error al cargar las preguntas.";
+} finally {
+  isLoading = false;
+}
+---
+
+<ContentSection title="Preguntas frecuentes" id="faqs">
+  
+  <div id="laundry" class="absolute left-[85%] top-0 z-[-1] hidden scale-90 md:top-[20%] md:block  xl:top-[25%]">
+    <Image
+      class="h-auto w-full object-contain opacity-50"
+      src={Image2}
+      widths={widths}
+      sizes={sizes}
+      loading="eager"
+      alt="Image"
+    />
+  </div>
+  <!-- <div class="max-w-3xl mx-auto p-4 space-y-4">
+    {getfaqs.map(({ question, answer }, index) => (
+      <details key={index} class="border border-cyan-400 bg-offset rounded-lg overflow-hidden">
+        <summary class="bg-offset p-4 cursor-pointer font-semibold text-lg">
+          {question}
+        </summary>
+        <div class="p-4 bg-offset text-offset">
+          {answer}
+        </div>
+      </details>
+    ))}
+  </div> -->
+  {isLoading && <p>Cargando preguntas...</p>}
+
+  {error && <p class="text-red-500">{error}</p>}
+
+  {!isLoading && !error && (
+  <div class="max-w-3xl mx-auto p-4 space-y-4">
+    {questions.map(({ question, answer }, index) => (
+      <details key={index} class="border border-cyan-400 bg-offset rounded-lg overflow-hidden">
+        <summary class="bg-offset p-4 cursor-pointer font-semibold text-lg">
+          {question}
+        </summary>
+        <div class="p-4 bg-offset text-offset">
+          {answer}
+        </div>
+      </details>
+    ))}
+  </div>
+  )}
+</ContentSection>
+<style>
+  @keyframes float {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+      transform: translate3d(0, 30px, 0);
+    }
+  }
+
+  #laundry {
+    animation: float linear 2.5s infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #laundry {
+      @apply animate-none;
+    }
+  }
+</style>

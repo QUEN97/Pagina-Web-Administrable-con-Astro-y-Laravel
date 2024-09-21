@@ -1,0 +1,85 @@
+---
+import { Icon } from "astro-icon/components";
+import ContentSection from "~/components/content-section.astro";
+import { Image } from "astro:assets";
+import Image3 from "~/assets/image3.svg";
+
+const widths = [250, 400];
+const sizes = "(min-width: 440px) 32vw, 37vw";
+
+// Llamar a la API de Laravel para obtener datos dinámicos
+let introData = null;
+let error = null;
+
+try {
+  const response = await fetch("http://127.0.0.1:8000/api/intro");
+  introData = await response.json();
+} catch (err) {
+  error = "No se pudo cargar el contenido dinámico.";
+}
+---
+
+<ContentSection title={introData?.title || "Cargando..."} id="nosotros">
+  <div
+    id="laundry"
+    class="absolute left-0 top-[55%] z-[-1] hidden scale-90 md:top-[20%] md:block xl:left-[4%] xl:top-[5%]"
+  >
+  <Image
+  class="h-auto w-full object-contain opacity-50"
+  src={Image3}
+  widths={widths}
+  sizes={sizes}
+  loading="eager"
+  alt="Image"
+/>
+  </div>
+
+  <Fragment slot="lead">
+    {introData ? (
+      <>
+        <span class="text-primary">{introData.lead_text.highlight1}</span>, {introData.lead_text.text1}
+         <span class="text-primary"> {introData.lead_text.highlight2}</span>. 
+         {introData.lead_text.text2} 
+         <span
+          class="text-primary">{introData.lead_text.highlight3}</span>.
+      </>
+    ) : (
+      <p>Cargando...</p>
+    )}
+  </Fragment>
+
+  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+    {introData?.buttons.map((button, index) => (
+      <a
+        key={index}
+        href={button.href}
+        class="flex items-center justify-center gap-3 border-2 border-cyan-400 px-6 py-4"
+      >
+        <Icon name={button.icon} class="size-8" />
+        <span>{button.text}</span>
+      </a>
+    ))}
+  </div>
+</ContentSection>
+
+<style>
+  @keyframes float {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+      transform: translate3d(0, 30px, 0);
+    }
+  }
+
+  #laundry {
+    animation: float linear 2.5s infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #laundry {
+      @apply animate-none;
+    } 
+  }
+</style>
