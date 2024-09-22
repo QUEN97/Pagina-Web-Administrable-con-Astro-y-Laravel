@@ -17,12 +17,28 @@ try {
 } finally {
   isLoading = false;
 }
+
+// Llamar a la API de Laravel para obtener datos dinámicos
+let serviceData = null;
+
+try {
+  const response = await fetch("http://127.0.0.1:8000/api/service");
+  serviceData = await response.json();
+} catch (err) {
+  error = "No se pudo cargar el contenido dinámico.";
+}
 ---
 
-<ContentSection title="Nuestros Servicios" id="servicios">
+<ContentSection title={serviceData?.title || "Cargando..."} id="servicios">
   <Fragment slot="lead">
-    Entrega en <span class="text-primary">24 horas</span>. <br />
-    <span class="text-slate-400 text-sm">*Sujeto a cambios.</span>
+    {serviceData ? (
+      <>
+    {serviceData.lead_text.text1} <span class="text-primary"> {serviceData.lead_text.highlight1} </span>. <br />
+    <span class="text-slate-400 text-sm">{serviceData.lead_text.text2}</span>
+    </>
+    ) : (
+      <p>Cargando...</p>
+    )}
   </Fragment>
   <!-- <ul class="grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
     {
