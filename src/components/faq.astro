@@ -19,9 +19,19 @@ try {
 } finally {
   isLoading = false;
 }
+
+// Llamar a la API de Laravel para obtener datos dinámicos
+let questionData = null;
+
+try {
+  const response = await fetch("http://127.0.0.1:8000/api/question");
+  questionData = await response.json();
+} catch (err) {
+  error = "No se pudo cargar el contenido dinámico.";
+}
 ---
 
-<ContentSection title="Preguntas frecuentes" id="faqs">
+<ContentSection title={questionData?.title || "Cargando..."} id="faqs">
   
   <div id="laundry" class="absolute left-[85%] top-0 z-[-1] hidden scale-90 md:top-[20%] md:block  xl:top-[25%]">
     <Image
