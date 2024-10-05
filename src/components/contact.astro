@@ -5,9 +5,20 @@ import { Image } from "astro:assets";
 import Image1 from "~/assets/image2.svg";
 const widths = [250, 400];
 const sizes = "(min-width: 220px) 20vw, 37vw";
+
+// Llamar a la API de Laravel para obtener datos dinámicos
+let contactData = null;
+let error = null;
+
+try {
+  const response = await fetch("http://127.0.0.1:8000/api/contact");
+  contactData = await response.json();
+} catch (err) {
+  error = "No se pudo cargar el contenido dinámico.";
+}
 ---
 
-<ContentSection title="¡Ponte en contacto con nosotros!" id="contacto">
+<ContentSection title={contactData?.title || "Cargando..."} id="contacto">
     <div id="laundry"
     class="absolute left-[85%] top-0 z-[-1] hidden scale-90 md:top-[10%] md:block xl:left-[4%] xl:top-0"
   >
@@ -21,8 +32,14 @@ const sizes = "(min-width: 220px) 20vw, 37vw";
     />
   </div>
     <Fragment slot="lead">
-        Puedes contactarnos <span class="text-primary">completanto el formulario</span>{" "}
-      o por nuestros <span class="text-primary">métodos de cóntacto.</span>{" "}
+      {contactData ? (
+      <Fragment>
+        {contactData.lead_text.text1} <span class="text-primary"> {contactData.lead_text.highlight1} </span>{" "}
+        {contactData.lead_text.text2} <span class="text-primary"> {contactData.lead_text.highlight2}</span>{" "}
+      </Fragment>
+      ) : (
+      <p>Cargando...</p>
+    )}
     </Fragment>
     <section class="py-3 px-3 sm:px-2  mb-3">
         <div class="max-w-7xl m-auto">
@@ -35,14 +52,14 @@ const sizes = "(min-width: 220px) 20vw, 37vw";
                             
                             <span>Correo:</span>
                         </h2>
-                        <span>luzmarianacerezoromero@gmail.com</span>
+                        <span>{contactData?.mailcontact || "Cargando..."}</span>
                     </div>
                     <div>
                         <h2 class="flex gap-2 items-center text-2xl font-medium text-purple-600 mb-1 px-1">
                             
                             <span>Teléfono:</span>
                         </h2>
-                        <span>(+52) 222 847 9246</span>
+                        <span>{contactData?.telephonecontact || "Cargando..."}</span>
                     </div>
                 </div>
             </div>

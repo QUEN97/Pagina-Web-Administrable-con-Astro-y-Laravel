@@ -12,18 +12,29 @@ if (Astro.request.method === "POST") {
     }
   }
 }
+
+// Llamar a la API de Laravel para obtener datos dinámicos
+let contactData = null;
+let error = null;
+
+try {
+  const response = await fetch("http://127.0.0.1:8000/api/contact");
+  contactData = await response.json();
+} catch (err) {
+  error = "No se pudo cargar el contenido dinámico.";
+}
 ---
 <form method="POST" class="my-3 sm:my-0 pt-3 sm:pt-0 border-t sm:border-t-0 flex flex-col gap-2 w-full">
     <label for="Nombre">
-        <span class="text-purple-500">Nombre</span>
+        <span class="text-purple-500">{contactData?.name || "Cargando..."}</span>
         <input id="Nombre" name="Cliente" type="text" required class={clases}>
     </label>
     <label for="Email">
-        <span class="text-purple-500">Correo electrónico</span>
+        <span class="text-purple-500">{contactData?.email || "Cargando..."}</span>
         <input id="Email" name="Correo"type="email" required placeholder="example@correo.com" class={clases}>
     </label>
     <label for="Mensaje">
-        <span class="text-purple-500">Mensaje</span>
+        <span class="text-purple-500">{contactData?.message || "Cargando..."}</span>
         <textarea name="Mensaje" id="Mensaje" required v-model="user.details"  class={clases}></textarea>
     </label>
     <button type="submit" class="w-fit px-4 py-2 rounded-lg bg-pink-700 text-pink-100 hover:bg-pink-600 transition-colors duration-300">
